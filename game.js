@@ -37,10 +37,11 @@ function loadSounds() {
 let gameRunning = false;
 let score = 0;
 let highScore = localStorage.getItem('dinoHighScore') || 0;
-let gameSpeed = 6;
+let gameSpeed = 4; // Уменьшена начальная скорость с 6 до 4
 let gravity = 0.6;
-let jumpPower = -15;
+let jumpPower = -12; // Уменьшена высота прыжка с -15 до -12
 let groundLevel;
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 // Изображения
 const dinoImage = new Image();
@@ -152,15 +153,23 @@ function resizeCanvas() {
     canvas.width = width;
     canvas.height = height;
     
-    // Обновление позиций
-    groundLevel = canvas.height - 80;
+    // Адаптивный размер персонажей
+    let scale = Math.min(width / 1000, height / 400);
+    
+    // Оптимальный размер для всех устройств
+    if (isMobile) {
+        scale = Math.max(scale * 2, 1.0); // Увеличиваем размер в 2 раза для мобильных
+    } else {
+        scale = Math.max(scale * 1.3, 0.7); // Умеренное увеличение для ПК
+    }
+    
+    dino.width = 60 * scale; // Оптимальный базовый размер
+    dino.height = 70 * scale;
+    
+    // Обновление позиций (ПОСЛЕ установки размеров!)
+    groundLevel = canvas.height - dino.height - 20; // Земля с учетом высоты динозавра
     dino.x = 50;
     dino.y = groundLevel;
-    
-    // Адаптивный размер персонажей
-    const scale = Math.min(width / 1000, height / 400);
-    dino.width = 60 * scale;
-    dino.height = 60 * scale;
 }
 
 // Воспроизведение звука
@@ -174,10 +183,19 @@ function playSound(sound) {
 // Создание препятствия
 function createObstacle() {
     const obstacle = new Obstacle();
-    const scale = Math.min(canvas.width / 1000, canvas.height / 400);
-    obstacle.width = 50 * scale;
-    obstacle.height = 50 * scale;
-    obstacle.y = groundLevel;
+    let scale = Math.min(canvas.width / 1000, canvas.height / 400);
+    
+    // Уменьшенный размер для препятствий (кактусов)
+    if (isMobile) {
+        scale = Math.max(scale * 1.2, 0.6); // Меньше для мобильных
+    } else {
+        scale = Math.max(scale * 1.0, 0.5); // Стандартный размер для ПК
+    }
+    
+    obstacle.width = 45 * scale; // Уменьшенный размер кактусов
+    obstacle.height = 45 * scale;
+    // Препятствие стоит на земле (на том же уровне что и динозавр)
+    obstacle.y = canvas.height - obstacle.height - 20;
     obstacles.push(obstacle);
 }
 
@@ -194,7 +212,7 @@ function updateScore() {
     
     // Постепенное ускорение как в оригинале
     if (score % 100 === 0) {
-        gameSpeed += 0.5;
+        gameSpeed += isMobile ? 0.3 : 0.5; // Медленнее ускорение на мобильных
     }
 }
 
@@ -270,7 +288,7 @@ function startGame() {
     // Сброс переменных
     gameRunning = true;
     score = 0;
-    gameSpeed = 6;
+    gameSpeed = isMobile ? 3 : 4; // Еще медленнее для мобильных
     obstacles = [];
     lastObstacleTime = 0;
     
