@@ -4,6 +4,9 @@ const gameContainer = document.getElementById('gameContainer');
 const startButton = document.getElementById('startButton');
 const restartButton = document.getElementById('restartButton');
 const menuButton = document.getElementById('menuButton');
+const skinsButton = document.getElementById('skinsButton');
+const skinsMenu = document.getElementById('skinsMenu');
+const backToMenu = document.getElementById('backToMenu');
 const gameOverScreen = document.getElementById('gameOver');
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -37,16 +40,19 @@ function loadSounds() {
 let gameRunning = false;
 let score = 0;
 let highScore = localStorage.getItem('dinoHighScore') || 0;
-let gameSpeed = 4; // Уменьшена начальная скорость с 6 до 4
+let gameSpeed = 5.5; // Начальная скорость
 let gravity = 0.6;
 let jumpPower = -12; // Уменьшена высота прыжка с -15 до -12
 let groundLevel;
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+// Скины
+let currentSkin = localStorage.getItem('selectedSkin') || 'изображения/рома.png';
+
 // Изображения
 const dinoImage = new Image();
 const obstacleImage = new Image();
-dinoImage.src = 'изображения/рома.png';
+dinoImage.src = currentSkin;
 obstacleImage.src = 'изображения/skin_back_pahan.png';
 
 // Объект динозаврика
@@ -288,7 +294,7 @@ function startGame() {
     // Сброс переменных
     gameRunning = true;
     score = 0;
-    gameSpeed = isMobile ? 3 : 4; // Еще медленнее для мобильных
+    gameSpeed = isMobile ? 4.5 : 5.5; // Увеличенная скорость
     obstacles = [];
     lastObstacleTime = 0;
     
@@ -358,9 +364,53 @@ window.addEventListener('resize', () => {
     }
 });
 
+// Система скинов
+function openSkinsMenu() {
+    menu.classList.add('hidden');
+    skinsMenu.classList.remove('hidden');
+    updateSkinsSelection();
+}
+
+function closeSkinsMenu() {
+    skinsMenu.classList.add('hidden');
+    menu.classList.remove('hidden');
+}
+
+function updateSkinsSelection() {
+    const skinCards = document.querySelectorAll('.skin-card');
+    skinCards.forEach(card => {
+        const skinPath = card.getAttribute('data-skin');
+        if (skinPath === currentSkin) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    });
+}
+
+function selectSkin(skinPath) {
+    currentSkin = skinPath;
+    localStorage.setItem('selectedSkin', skinPath);
+    dinoImage.src = skinPath;
+    updateSkinsSelection();
+}
+
+// Обработчики кнопок скинов
+skinsButton.addEventListener('click', openSkinsMenu);
+backToMenu.addEventListener('click', closeSkinsMenu);
+
+// Обработчики выбора скинов
+document.querySelectorAll('.skin-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const skinPath = card.getAttribute('data-skin');
+        selectSkin(skinPath);
+    });
+});
+
 // Инициализация
 window.addEventListener('load', () => {
     loadSounds();
     highScoreElement.textContent = highScore;
     resizeCanvas();
+    updateSkinsSelection();
 });

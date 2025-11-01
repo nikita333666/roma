@@ -35,7 +35,7 @@ body {
     letter-spacing: 2px;
 }
 
-.start-button, .restart-button, .menu-button {
+.start-button, .restart-button, .menu-button, .skins-button, .back-button {
     padding: 1rem 2.5rem;
     font-size: clamp(1rem, 2.5vw, 1.3rem);
     font-weight: bold;
@@ -49,12 +49,12 @@ body {
     margin: 0.5rem;
 }
 
-.start-button:hover, .restart-button:hover, .menu-button:hover {
+.start-button:hover, .restart-button:hover, .menu-button:hover, .skins-button:hover, .back-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
 }
 
-.start-button:active, .restart-button:active, .menu-button:active {
+.start-button:active, .restart-button:active, .menu-button:active, .skins-button:active, .back-button:active {
     transform: translateY(-1px);
 }
 
@@ -141,6 +141,72 @@ body {
     font-weight: bold;
 }
 
+/* Экран выбора скинов */
+.skins-menu {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.5s ease-in;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 700px;
+}
+
+.skins-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+.skin-card {
+    background: white;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.skin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+}
+
+.skin-card.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.skin-card img {
+    width: 100%;
+    height: auto;
+    max-height: 100px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.skin-card p {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    color: #667eea;
+    font-weight: bold;
+    margin: 0;
+}
+
 /* Утилиты */
 .hidden {
     display: none !important;
@@ -171,9 +237,14 @@ body {
 
 /* Адаптивность для планшетов */
 @media (max-width: 768px) {
-    .menu {
+    .menu, .skins-menu {
         padding: 2rem 1.5rem;
         width: 90%;
+    }
+    
+    .skins-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.8rem;
     }
     
     .score-board {
@@ -192,15 +263,28 @@ body {
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 480px) {
-    .menu {
+    .menu, .skins-menu {
         padding: 1.5rem 1rem;
     }
     
-    .game-title {
+    .game-title, .skins-title {
         margin-bottom: 1.5rem;
     }
     
-    .start-button, .restart-button, .menu-button {
+    .skins-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .skin-card {
+        padding: 0.8rem;
+    }
+    
+    .skin-card img {
+        max-height: 80px;
+    }
+    
+    .start-button, .restart-button, .menu-button, .skins-button, .back-button {
         padding: 0.8rem 2rem;
         width: 100%;
         max-width: 250px;
