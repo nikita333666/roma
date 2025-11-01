@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>РОМА ЖИРНОЕ ХУЙЛО</title>
+    <title>РОМА ЖИРНЫЙ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Меню игры -->
     <div id="menu" class="menu">
-        <h1 class="game-title">РОМА ЖИРНОЕ ХУЙЛО</h1>
+        <h1 class="game-title">РОМА ЖИРНЫЙ</h1>
+        <div class="currency-display">
+            <img src="изображения/hamburger.png" alt="Бигмак" class="currency-icon">
+            <span id="bigMacs">0</span>
+        </div>
         <button id="startButton" class="start-button">НАЧАТЬ ИГРУ</button>
         <button id="skinsButton" class="skins-button">СКИНЫ</button>
+        <button id="wheelButton" class="wheel-button">КОЛЕСО БИГМАКОВ</button>
         <div class="instructions">
             <p>Нажмите ПРОБЕЛ или коснитесь экрана для прыжка</p>
         </div>
@@ -19,34 +24,77 @@
 
     <!-- Экран выбора скинов -->
     <div id="skinsMenu" class="skins-menu hidden">
-        <h2 class="skins-title">ВЫБЕРИ СКИН</h2>
+        <h2 class="skins-title">МАГАЗИН СКИНОВ</h2>
+        <div class="currency-display-shop">
+            <img src="изображения/hamburger.png" alt="Бигмак" class="currency-icon">
+            <span id="bigMacsShop">0</span>
+        </div>
         <div class="skins-grid">
-            <div class="skin-card" data-skin="изображения/рома.png">
+            <div class="skin-card free" data-skin="изображения/рома.png" data-price="0">
                 <img src="изображения/рома.png" alt="Рома">
                 <p>Рома</p>
+                <span class="skin-price">БЕСПЛАТНО</span>
             </div>
-            <div class="skin-card" data-skin="изображения/рома1.png">
+            <div class="skin-card locked" data-skin="изображения/рома1.png" data-price="100">
+                <div class="lock-overlay">🔒</div>
                 <img src="изображения/рома1.png" alt="Рома 1">
                 <p>Рома 1</p>
+                <span class="skin-price">
+                    <img src="изображения/hamburger.png" class="price-icon"> 100
+                </span>
             </div>
-            <div class="skin-card" data-skin="изображения/рома2.png">
+            <div class="skin-card locked" data-skin="изображения/рома2.png" data-price="200">
+                <div class="lock-overlay">🔒</div>
                 <img src="изображения/рома2.png" alt="Рома 2">
                 <p>Рома 2</p>
+                <span class="skin-price">
+                    <img src="изображения/hamburger.png" class="price-icon"> 200
+                </span>
             </div>
-            <div class="skin-card" data-skin="изображения/рома3.png">
+            <div class="skin-card locked" data-skin="изображения/рома3.png" data-price="350">
+                <div class="lock-overlay">🔒</div>
                 <img src="изображения/рома3.png" alt="Рома 3">
                 <p>Рома 3</p>
+                <span class="skin-price">
+                    <img src="изображения/hamburger.png" class="price-icon"> 350
+                </span>
             </div>
-            <div class="skin-card" data-skin="изображения/рома4.png">
+            <div class="skin-card locked" data-skin="изображения/рома4.png" data-price="500">
+                <div class="lock-overlay">🔒</div>
                 <img src="изображения/рома4.png" alt="Рома 4">
                 <p>Рома 4</p>
+                <span class="skin-price">
+                    <img src="изображения/hamburger.png" class="price-icon"> 500
+                </span>
             </div>
-            <div class="skin-card" data-skin="изображения/рома5.png">
+            <div class="skin-card locked" data-skin="изображения/рома5.png" data-price="1000">
+                <div class="lock-overlay">🔒</div>
                 <img src="изображения/рома5.png" alt="Рома 5">
                 <p>Рома 5</p>
+                <span class="skin-price">
+                    <img src="изображения/hamburger.png" class="price-icon"> 1000
+                </span>
+            </div>
+            <div class="skin-card locked achievement" data-skin="изображения/рома финальный.png" data-achievement="300">
+                <div class="lock-overlay">🏆</div>
+                <img src="изображения/рома финальный.png" alt="Рома Финальный">
+                <p>Рома Финальный</p>
+                <span class="skin-price achievement-text">Рекорд: 300</span>
             </div>
         </div>
         <button id="backToMenu" class="back-button">НАЗАД</button>
+    </div>
+
+    <!-- Колесо фортуны -->
+    <div id="wheelMenu" class="wheel-menu hidden">
+        <h2 class="wheel-title">КОЛЕСО БИГМАКОВ</h2>
+        <div class="wheel-container">
+            <canvas id="wheelCanvas" width="400" height="400"></canvas>
+            <div class="wheel-pointer">▼</div>
+        </div>
+        <p class="wheel-info" id="wheelInfo">Крути колесо и выигрывай бигмаки!</p>
+        <button id="spinButton" class="spin-button">КРУТИТЬ</button>
+        <button id="backToMenuFromWheel" class="back-button">НАЗАД</button>
     </div>
 
     <!-- Игровое поле -->
@@ -54,6 +102,10 @@
         <div class="score-board">
             <div class="score">Очки: <span id="score">0</span></div>
             <div class="high-score">Рекорд: <span id="highScore">0</span></div>
+            <div class="currency-game">
+                <img src="изображения/hamburger.png" alt="Бигмак" class="currency-icon-small">
+                <span id="bigMacsGame">0</span>
+            </div>
         </div>
         
         <canvas id="gameCanvas"></canvas>
@@ -63,11 +115,16 @@
             <h2>GAME OVER</h2>
             <p class="final-score">Ваш счёт: <span id="finalScore">0</span></p>
             <p class="high-score-text">Рекорд: <span id="finalHighScore">0</span></p>
+            <p class="earned-currency">
+                <img src="изображения/hamburger.png" class="currency-icon-small"> 
+                +<span id="earnedBigMacs">0</span> бигмаков
+            </p>
             <button id="restartButton" class="restart-button">ИГРАТЬ СНОВА</button>
             <button id="menuButton" class="menu-button">В МЕНЮ</button>
         </div>
     </div>
 
     <script src="game.js"></script>
+    <script src="currency.js"></script>
 </body>
 </html>

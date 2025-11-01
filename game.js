@@ -7,6 +7,13 @@ const menuButton = document.getElementById('menuButton');
 const skinsButton = document.getElementById('skinsButton');
 const skinsMenu = document.getElementById('skinsMenu');
 const backToMenu = document.getElementById('backToMenu');
+const wheelButton = document.getElementById('wheelButton');
+const wheelMenu = document.getElementById('wheelMenu');
+const backToMenuFromWheel = document.getElementById('backToMenuFromWheel');
+const spinButton = document.getElementById('spinButton');
+const wheelCanvas = document.getElementById('wheelCanvas');
+const wheelCtx = wheelCanvas.getContext('2d');
+const wheelInfo = document.getElementById('wheelInfo');
 const gameOverScreen = document.getElementById('gameOver');
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -14,6 +21,10 @@ const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
 const finalScoreElement = document.getElementById('finalScore');
 const finalHighScoreElement = document.getElementById('finalHighScore');
+const bigMacsElement = document.getElementById('bigMacs');
+const bigMacsShopElement = document.getElementById('bigMacsShop');
+const bigMacsGameElement = document.getElementById('bigMacsGame');
+const earnedBigMacsElement = document.getElementById('earnedBigMacs');
 
 // Звуковые эффекты
 let jumpSound = null;
@@ -46,8 +57,18 @@ let jumpPower = -12; // Уменьшена высота прыжка с -15 до
 let groundLevel;
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-// Скины
+// Валюта и скины
+let bigMacs = parseInt(localStorage.getItem('bigMacs')) || 0;
+let ownedSkins = JSON.parse(localStorage.getItem('ownedSkins')) || ['изображения/рома.png'];
 let currentSkin = localStorage.getItem('selectedSkin') || 'изображения/рома.png';
+let obstaclesPassed = 0;
+let earnedThisGame = 0;
+
+// Колесо фортуны
+const wheelPrizes = [5, 10, 25, 30, 50, 100];
+let lastSpinDate = localStorage.getItem('lastSpinDate');
+let isSpinning = false;
+let currentRotation = 0;
 
 // Изображения
 const dinoImage = new Image();
@@ -208,7 +229,16 @@ function createObstacle() {
 // Обновление счета
 function updateScore() {
     score++;
+    obstaclesPassed++;
     scoreElement.textContent = score;
+    
+    // Начисление бигмаков каждые 40 кактусов
+    if (obstaclesPassed % 40 === 0) {
+        earnedThisGame += 15;
+        bigMacs += 15;
+        saveBigMacs();
+        updateCurrencyDisplay();
+    }
     
     if (score > highScore) {
         highScore = score;
@@ -294,12 +324,15 @@ function startGame() {
     // Сброс переменных
     gameRunning = true;
     score = 0;
-    gameSpeed = isMobile ? 4.5 : 5.5; // Увеличенная скорость
+    obstaclesPassed = 0;
+    earnedThisGame = 0;
+    gameSpeed = isMobile ? 4.5 : 5.5;
     obstacles = [];
     lastObstacleTime = 0;
     
     scoreElement.textContent = '0';
     highScoreElement.textContent = highScore;
+    updateCurrencyDisplay();
     
     resizeCanvas();
     dino.y = groundLevel;
@@ -318,6 +351,10 @@ function endGame() {
     
     finalScoreElement.textContent = score;
     finalHighScoreElement.textContent = highScore;
+    earnedBigMacsElement.textContent = earnedThisGame;
+    
+    // Проверка разблокировки финального скина
+    checkAchievementSkin();
     
     gameOverScreen.classList.remove('hidden');
 }
@@ -364,11 +401,10 @@ window.addEventListener('resize', () => {
     }
 });
 
-// Система скинов
+// Базовые функции скинов (расширенные в currency.js)
 function openSkinsMenu() {
     menu.classList.add('hidden');
     skinsMenu.classList.remove('hidden');
-    updateSkinsSelection();
 }
 
 function closeSkinsMenu() {
@@ -376,41 +412,14 @@ function closeSkinsMenu() {
     menu.classList.remove('hidden');
 }
 
-function updateSkinsSelection() {
-    const skinCards = document.querySelectorAll('.skin-card');
-    skinCards.forEach(card => {
-        const skinPath = card.getAttribute('data-skin');
-        if (skinPath === currentSkin) {
-            card.classList.add('selected');
-        } else {
-            card.classList.remove('selected');
-        }
-    });
-}
-
-function selectSkin(skinPath) {
-    currentSkin = skinPath;
-    localStorage.setItem('selectedSkin', skinPath);
-    dinoImage.src = skinPath;
-    updateSkinsSelection();
-}
-
-// Обработчики кнопок скинов
+// Обработчики кнопок
 skinsButton.addEventListener('click', openSkinsMenu);
 backToMenu.addEventListener('click', closeSkinsMenu);
-
-// Обработчики выбора скинов
-document.querySelectorAll('.skin-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const skinPath = card.getAttribute('data-skin');
-        selectSkin(skinPath);
-    });
-});
 
 // Инициализация
 window.addEventListener('load', () => {
     loadSounds();
     highScoreElement.textContent = highScore;
     resizeCanvas();
-    updateSkinsSelection();
+    updateCurrencyDisplay();
 });

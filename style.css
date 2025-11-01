@@ -207,6 +207,185 @@ body {
     margin: 0;
 }
 
+/* Валюта */
+.currency-display, .currency-display-shop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: bold;
+    color: #667eea;
+}
+
+.currency-icon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.currency-icon-small {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.currency-game {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.6rem 1rem;
+    border-radius: 15px;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: bold;
+    color: #667eea;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Цены и блокировки скинов */
+.skin-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-weight: bold;
+    color: #f39c12;
+}
+
+.price-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.skin-card.locked {
+    position: relative;
+    opacity: 0.7;
+    filter: grayscale(50%);
+}
+
+.skin-card.locked:hover {
+    opacity: 0.85;
+}
+
+.lock-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.skin-card.achievement .lock-overlay {
+    font-size: 2.5rem;
+}
+
+.achievement-text {
+    color: #e74c3c;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+}
+
+.earned-currency {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    color: #27ae60;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+/* Колесо фортуны */
+.wheel-menu {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.5s ease-in;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 600px;
+}
+
+.wheel-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wheel-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto;
+    width: fit-content;
+}
+
+#wheelCanvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #e74c3c;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.wheel-info {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #666;
+    margin: 1rem 0;
+}
+
+.spin-button, .wheel-button {
+    padding: 1rem 2.5rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+    margin: 0.5rem;
+}
+
+.spin-button:hover, .wheel-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.6);
+}
+
+.spin-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Утилиты */
 .hidden {
     display: none !important;
